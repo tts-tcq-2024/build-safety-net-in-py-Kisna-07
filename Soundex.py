@@ -1,6 +1,5 @@
-def get_soundex_code(c):
-    c = c.upper()
-    mapping = {
+def get_char_code_mapping():
+    return {
         'B': '1', 'F': '1', 'P': '1', 'V': '1',
         'C': '2', 'G': '2', 'J': '2', 'K': '2', 'Q': '2', 'S': '2', 'X': '2', 'Z': '2',
         'D': '3', 'T': '3',
@@ -8,19 +7,22 @@ def get_soundex_code(c):
         'M': '5', 'N': '5',
         'R': '6'
     }
-    return mapping.get(c, '0')  # Default to '0' for non-mapped characters
 
+def get_soundex_code(c, mapping):
+    return mapping.get(c.upper(), '0')  
 
 def generate_soundex(name):
     if not name:
         return ""
 
+    mapping = get_char_code_mapping()
+
     # Start with the first letter (capitalized)
     soundex = name[0].upper()
-    prev_code = get_soundex_code(soundex)
+    prev_code = get_soundex_code(soundex, mapping)
 
     for char in name[1:]:
-        code = get_soundex_code(char)
+        code = get_soundex_code(char, mapping)
         if code != '0' and code != prev_code:
             soundex += code
             prev_code = code
