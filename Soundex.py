@@ -19,18 +19,19 @@ def initialize_soundex(name, mapping):
     initial_code = get_soundex_code(initial, mapping)
     return initial, initial_code
 
+def append_code(soundex, char, mapping, prev_code):
+    code = get_soundex_code(char, mapping)
+    if code != '0' and code != prev_code:
+        return soundex + code, code
+    return soundex, prev_code
+
 def process_characters(name, initial_code, mapping):
     soundex = name[0].upper()
     prev_code = initial_code
-    length = 1
 
     for char in name[1:]:
-        code = get_soundex_code(char, mapping)
-        if code != '0' and code != prev_code:
-            soundex += code
-            prev_code = code
-            length += 1
-        if length == 4:
+        soundex, prev_code = append_code(soundex, char, mapping, prev_code)
+        if len(soundex) == 4:
             break
 
     return soundex
