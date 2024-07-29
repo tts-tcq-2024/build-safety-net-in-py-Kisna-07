@@ -14,9 +14,24 @@ def get_soundex_code(c, mapping):
 def clean_name(name):
     return ''.join(filter(str.isalpha, name))
 
-def encode_character(char, mapping, previous_code):
-    code = get_soundex_code(char, mapping)
-    return code if code != previous_code else ''
+def initialize_soundex(name, mapping):
+    initial = name[0].upper()
+    initial_code = get_soundex_code(initial, mapping)
+    return initial, initial_code
+
+def process_characters(name, initial_code, mapping):
+    soundex = name[0].upper()
+    prev_code = initial_code
+
+    for char in name[1:]:
+        code = get_soundex_code(char, mapping)
+        if code != '0' and code != prev_code:
+            soundex += code
+            prev_code = code
+        if len(soundex) == 4:
+            break
+
+    return soundex
 
 def generate_soundex(name):
     if not name:
@@ -27,15 +42,7 @@ def generate_soundex(name):
         return ""
 
     mapping = get_char_code_mapping()
-    soundex = cleaned_name[0].upper()
-    previous_code = get_soundex_code(soundex, mapping)
-
-    for char in cleaned_name[1:]:
-        code = encode_character(char, mapping, previous_code)
-        if code:
-            soundex += code
-            previous_code = code
-        if len(soundex) == 4:
-            break
-
+    initial, initial_code = initialize_soundex(cleaned_name, mapping)
+    soundex = process_characters(cleaned_name, initial_code, mapping)
+    
     return soundex.ljust(4, '0')
