@@ -22,13 +22,15 @@ def initialize_soundex(name, mapping):
 def process_characters(name, initial_code, mapping):
     soundex = name[0].upper()
     prev_code = initial_code
+    length = 1
 
     for char in name[1:]:
         code = get_soundex_code(char, mapping)
         if code != '0' and code != prev_code:
             soundex += code
             prev_code = code
-        if len(soundex) == 4:
+            length += 1
+        if length == 4:
             break
 
     return soundex
